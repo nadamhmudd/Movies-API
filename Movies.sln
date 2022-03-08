@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.Core", "Movies.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.DataAccess", "Movies.DataAccess\Movies.DataAccess.csproj", "{B30C744F-A469-4E6A-AFAB-E8AB191489C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.Services", "Movies.Services\Movies.Services.csproj", "{CFA126FB-1226-4726-B845-07FE10E16284}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B30C744F-A469-4E6A-AFAB-E8AB191489C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B30C744F-A469-4E6A-AFAB-E8AB191489C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B30C744F-A469-4E6A-AFAB-E8AB191489C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFA126FB-1226-4726-B845-07FE10E16284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFA126FB-1226-4726-B845-07FE10E16284}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFA126FB-1226-4726-B845-07FE10E16284}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFA126FB-1226-4726-B845-07FE10E16284}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
