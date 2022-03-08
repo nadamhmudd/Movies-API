@@ -13,6 +13,11 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
     }
 
     //CRUD opertaions
+    public async Task<T> AddAsync(T entity)
+    {
+        _dbSet.Add(entity);
+        return entity;
+    }
     public async Task<IEnumerable<T>> GetAllAsync(
         Expression<Func<T, object>>? orderBy = null,
         string orderByDirection = SD.Ascending)
