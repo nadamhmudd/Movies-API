@@ -68,5 +68,16 @@ namespace Movies.API.Controllers
 
             return Ok(genre);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(byte id)
+        {
+            var genre = await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == id);
+
+            if (genre is null)
+                return NotFound($"No genre was found with ID: {id}");
+
+            return Ok(genre);
+        }
     }
 }
