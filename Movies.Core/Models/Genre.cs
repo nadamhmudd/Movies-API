@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Movies.Models;
+namespace Movies.Core.Models;
 public class Genre
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

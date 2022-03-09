@@ -1,5 +1,5 @@
 ﻿using Movies.DataAccess.Repositories;
-using Movies.Models;
+using Movies.Core.Models;
 using Movies.Core.Interfaces;
 using Movies.Core.Interfaces.Repositories;
 

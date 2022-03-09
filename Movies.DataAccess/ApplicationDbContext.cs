@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Movies.Models;
+using Movies.Core.Models;
 
 namespace Movies.DataAccess;
 public class ApplicationDbContext : DbContext
@@ -9,4 +9,5 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Genre> Genres { get; set; }
+    public DbSet<Movie> Movies { get; set; }
 }

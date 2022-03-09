@@ -1,5 +1,5 @@
 ﻿using Movies.Core.Interfaces.Repositories;
-using Movies.Models;
+using Movies.Core.Models;
 
 namespace Movies.Core.Interfaces;
 public interface IUnitOfWork
