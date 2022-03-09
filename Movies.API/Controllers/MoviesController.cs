@@ -53,13 +53,15 @@ public class MoviesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromForm] MovieDto dto)
     {
-        string posterUrl = await ImagesHelper.UploadImage(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
-
-        if (!posterUrl.Contains('\\')) //not path
-            return BadRequest(posterUrl); //return error message
+        if (dto.Poster == null)
+            return BadRequest("Poster is required!");
 
         if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == dto.GenreId))
             return BadRequest("Invaild Genre ID!");
+
+        string posterUrl = await ImagesHelper.UploadImage(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
+        if (!posterUrl.Contains('\\')) //not path
+            return BadRequest(posterUrl); //return error message
 
         var movie = new Movie
         {
