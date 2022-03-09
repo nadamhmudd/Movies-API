@@ -16,7 +16,7 @@ namespace Movies.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
-                    Rete = table.Column<double>(type: "float", nullable: false),
+                    Rate = table.Column<double>(type: "float", nullable: false),
                     StoryLine = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false),
                     PosterUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GenreId = table.Column<byte>(type: "tinyint", nullable: false)

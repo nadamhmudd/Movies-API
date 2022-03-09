@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Movies.Core.Interfaces;
 using Movies.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);

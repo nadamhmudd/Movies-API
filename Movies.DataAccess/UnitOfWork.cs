@@ -16,10 +16,11 @@ namespace Movies.DataAccess
 
             //Initialize App Repositories
             Genre = new BaseRepository<Genre>(_db.Set<Genre>());
-            
+            Movie = new MovieRepository(_db.Set<Movie>());
         }
 
         public IBaseRepository<Genre> Genre { get; private set; }
+        public IMovieRepository Movie { get; private set; }
 
         public void Save() => _db.SaveChanges();
     }

@@ -18,4 +18,5 @@ public interface IBaseRepository<T> where T : class
 
     //Aggregating operations
     Task<int> CountAsync();
+    Task<bool> IsValidAsync(Expression<Func<T, bool>> criteria);
 }

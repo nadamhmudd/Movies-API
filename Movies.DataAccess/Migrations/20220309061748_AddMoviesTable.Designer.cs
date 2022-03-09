@@ -11,7 +11,7 @@ using Movies.DataAccess;
 namespace Movies.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220309022511_AddMoviesTable")]
+    [Migration("20220309061748_AddMoviesTable")]
     partial class AddMoviesTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace Movies.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Rete")
+                    b.Property<double>("Rate")
                         .HasColumnType("float");
 
                     b.Property<string>("StoryLine")

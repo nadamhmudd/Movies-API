@@ -73,4 +73,10 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         return await _dbSet.CountAsync();
     }
+
+    public async Task<bool> IsValidAsync(Expression<Func<T, bool>> criteria)
+    {
+        return await _dbSet.AnyAsync(criteria);
+    }
+
 }

@@ -54,7 +54,7 @@ namespace Movies.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Rete")
+                    b.Property<double>("Rate")
                         .HasColumnType("float");
 
                     b.Property<string>("StoryLine")

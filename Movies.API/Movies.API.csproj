@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Movies.DataAccess\Movies.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\MoviesPoster\" />
+  </ItemGroup>
+
 </Project>
