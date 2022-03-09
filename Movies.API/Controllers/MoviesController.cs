@@ -12,11 +12,11 @@ public class MoviesController : ControllerBase
         _hostEnviroment = hostEnviroment;
     }
 
-    [HttpGet] 
+    [HttpGet]
     public async Task<IActionResult> GetAllAysnc()
     {
         var movies = await _unitOfWork.Movie.GetAllAsync(includeProperties: "Genre", orderBy: m => m.Rate, orderByDirection: SD.Descending);
-        
+
         return Ok(movies);
     }
 
@@ -36,7 +36,7 @@ public class MoviesController : ControllerBase
     [HttpGet("GetByGenreId")]
     public async Task<IActionResult> GetByGenreIdAsync(byte genreId)
     {
-        if(! await _unitOfWork.Genre.IsValidAsync(g => g.Id == genreId))
+        if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == genreId))
             return BadRequest("Invaild Genre ID!");
 
         var movie = await _unitOfWork.Movie.GetAllAsync(
@@ -45,7 +45,7 @@ public class MoviesController : ControllerBase
             orderBy: m => m.Rate, orderByDirection: SD.Descending);
 
         if (movie.Count() == 0)
-            return NotFound($"No movie was found under genre: {(await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id==genreId)).Name}");
+            return NotFound($"No movie was found under genre: {(await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == genreId)).Name}");
 
         return Ok(movie);
     }
@@ -53,12 +53,12 @@ public class MoviesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromForm] MovieDto dto)
     {
-        string posterUrl = ImagesHelper.UploadImage(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
+        string posterUrl = await ImagesHelper.UploadImage(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
 
         if (!posterUrl.Contains('\\')) //not path
             return BadRequest(posterUrl); //return error message
 
-        if (! await _unitOfWork.Genre.IsValidAsync(g => g.Id == dto.GenreId))
+        if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == dto.GenreId))
             return BadRequest("Invaild Genre ID!");
 
         var movie = new Movie
@@ -73,7 +73,43 @@ public class MoviesController : ControllerBase
         await _unitOfWork.Movie.AddAsync(movie);
         _unitOfWork.Save();
 
-       return Ok(movie);
+        return Ok(movie);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAsync(int id, [FromForm] MovieDto dto)
+    {
+        var movie = await _unitOfWork.Movie.GetByIdAsync(id);
+
+        if (movie is null)
+            return NotFound($"No movie was found with ID: {id}");
+
+        if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == dto.GenreId))
+            return BadRequest("Invaild Genre ID!");
+
+        if(dto.Poster is not null)
+        {
+            //delete old poster
+            ImagesHelper.DeleteImage(movie.PosterUrl); 
+            
+            //upload new poster
+            var newPosterUrl = await ImagesHelper.UploadImage(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
+            
+            if (!newPosterUrl.Contains('\\')) //not path
+                return BadRequest(newPosterUrl); //return error message
+
+            movie.PosterUrl = newPosterUrl;
+        }
+        movie.GenreId = dto.GenreId;
+        movie.Title = dto.Title.Trim().CapitalizeFistLitter();
+        movie.Rate = dto.Rate;
+        movie.StoryLine = dto.StoryLine;
+        movie.Year = dto.Year;
+
+        _unitOfWork.Movie.Update(movie);
+        _unitOfWork.Save();
+
+        return Ok(movie);
     }
 
     [HttpDelete("{id}")]

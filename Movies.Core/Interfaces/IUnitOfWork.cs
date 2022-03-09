@@ -6,7 +6,7 @@ public interface IUnitOfWork
 {
     //Register App Repositories
     public IBaseRepository<Genre> Genre { get; }
-    public IMovieRepository Movie { get; }
+    public IBaseRepository<Movie> Movie { get; }
 
     //Global Methods
     public void Save();
