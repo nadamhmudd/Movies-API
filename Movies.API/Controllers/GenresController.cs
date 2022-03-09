@@ -39,7 +39,7 @@ namespace Movies.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] GenreDto dto)
+        public async Task<IActionResult> UpdateAsync(byte id, [FromBody] GenreDto dto)
         {
             var genre = await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == id);
 
@@ -49,6 +49,21 @@ namespace Movies.API.Controllers
             //update genre , tracked = false
             genre.Name = dto.Name.Trim().CapitalizeFistLitter();
             _unitOfWork.Genre.Update(genre);
+            _unitOfWork.Save();
+
+            return Ok(genre);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(byte id)
+        {
+            var genre = await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == id);
+
+            if (genre is null)
+                return NotFound($"No genre was found with ID: {id}");
+
+            //Delete
+            _unitOfWork.Genre.Delete(genre);
             _unitOfWork.Save();
 
             return Ok(genre);
