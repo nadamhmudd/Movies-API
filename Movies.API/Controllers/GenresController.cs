@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.DTOs;
 using Movies.Models;
+using Movies.Services.Extensions;
 
 namespace Movies.API.Controllers
 {
@@ -29,7 +30,7 @@ namespace Movies.API.Controllers
         {
             var genre = new Genre
             {
-                Name = dto.Name
+                Name = dto.Name.Trim().CapitalizeFistLitter() //Extension Method for String
             };
             await _unitOfWork.Genre.AddAsync(genre);
             _unitOfWork.Save();
