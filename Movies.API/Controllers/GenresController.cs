@@ -19,6 +19,17 @@
             return Ok(genres);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(byte id)
+        {
+            var genre = await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == id);
+
+            if (genre is null)
+                return NotFound($"No genre was found with ID: {id}");
+
+            return Ok(genre);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync(GenreDto dto)
         {
@@ -59,17 +70,6 @@
             //Delete
             _unitOfWork.Genre.Delete(genre);
             _unitOfWork.Save();
-
-            return Ok(genre);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(byte id)
-        {
-            var genre = await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == id);
-
-            if (genre is null)
-                return NotFound($"No genre was found with ID: {id}");
 
             return Ok(genre);
         }

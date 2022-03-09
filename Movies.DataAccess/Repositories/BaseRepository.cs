@@ -18,27 +18,37 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         _dbSet.Add(entity);
         return entity;
     }
+    
     public async Task<IEnumerable<T>> GetAllAsync(
+        Expression<Func<T, bool>>? criteria = null,
+        string includeProperties = null,
         Expression<Func<T, object>>? orderBy = null,
         string orderByDirection = SD.Ascending)
     {
         IQueryable<T> query =_dbSet;
 
-        if(orderBy != null)
+        if(criteria is not null)
+            query = query.Where(criteria);
+
+        if (includeProperties != null)
         {
-            if(orderByDirection == SD.Ascending)
-                query = query.OrderBy(orderBy);
-            else
-                query = query.OrderByDescending(orderBy);
+            query = _IncludeProperties(query, includeProperties);
+        }
+
+        if (orderBy != null)
+        {
+            query = _OrderBy(query, orderBy, orderByDirection);
         }
 
         return await query.ToListAsync();
     }
+    
     public T Update(T entity)
     {
         _dbSet.Update(entity);
         return entity;
     }
+   
     public void Delete(T entity) => _dbSet.Remove(entity);
 
     //Search operations
@@ -47,22 +57,13 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> criteria,
-        bool tracked = false,
-        string includeProperties = null)
+    public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> criteria, bool tracked = false, string includeProperties = null)
     {
-        IQueryable<T> query;
-        if (tracked)
-            query = _dbSet.Where(criteria);
-        else
-            query = _dbSet.AsNoTracking().Where(criteria);
+        IQueryable<T> query = _Tracked(tracked, criteria);
 
         if (includeProperties != null)
         {
-            foreach (var include in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(include);
-            }
+            query = _IncludeProperties(query, includeProperties);
         }
 
         return await query.FirstOrDefaultAsync(criteria);
@@ -79,4 +80,30 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return await _dbSet.AnyAsync(criteria);
     }
 
+    //-------------------Helper Method----------------------------------------
+    private IQueryable<T> _IncludeProperties(IQueryable<T> query, string includeProperties)
+    {
+        foreach (var include in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            query = query.Include(include);
+        }
+
+        return query;
+    }
+
+    private IQueryable<T> _OrderBy(IQueryable<T> query, Expression<Func<T, object>> orderBy, string orderByDirection)
+    {
+        if (orderByDirection == SD.Ascending)
+            return query.OrderBy(orderBy);
+        else
+            return query.OrderByDescending(orderBy);
+    }
+
+    private IQueryable<T> _Tracked(bool tracked, Expression<Func<T, bool>> criteria)
+    {
+        if (tracked)
+            return _dbSet.Where(criteria);
+        else
+            return _dbSet.AsNoTracking().Where(criteria);
+    }
 }

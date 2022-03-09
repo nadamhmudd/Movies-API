@@ -8,7 +8,7 @@ public interface IBaseRepository<T> where T : class
 {
     //CRUD Operations
     Task<T> AddAsync(T entity);
-    Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>>? orderBy = null, string orderByDirection = SD.Ascending);
+    Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? criteria = null, string includeProperties = null, Expression<Func<T, object>>? orderBy = null, string orderByDirection = SD.Ascending);
     T Update(T entity);
     void Delete(T entity);
 
