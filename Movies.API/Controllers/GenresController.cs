@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Movies.API.DTOs;
-using Movies.Models;
-using Movies.Services.Extensions;
-
-namespace Movies.API.Controllers
+﻿namespace Movies.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
