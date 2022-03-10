@@ -1,5 +1,6 @@
-﻿global using Movies.Entities.Models;
-global using Movies.Repo;
+﻿using Movies.Core.Entities.Models;
+using Movies.EF;
+using Movies.EF.Repositories;
 
 namespace Movies.Services.UOW;
 

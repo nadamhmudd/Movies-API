@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -18,6 +19,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 //add AutoMapper
+var mapperConfig = new MapperConfiguration(mc => {
+    mc.AddProfile(new MappingProfile());
+});
+builder.Services.AddSingleton(mapperConfig.CreateMapper());
 //builder.Services.AddAutoMapper(typeof(Program));
 
 //add cors
