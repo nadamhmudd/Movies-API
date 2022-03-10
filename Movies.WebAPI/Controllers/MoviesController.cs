@@ -56,11 +56,8 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromForm] MovieDto dto)
+    public async Task<IActionResult> CreateAsync([FromForm] MovieCreationDto dto)
     {
-        if (dto.Poster == null)
-            return BadRequest("Poster is required!");
-
         if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == dto.GenreId))
             return BadRequest("Invaild Genre ID!");
 
@@ -84,7 +81,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAsync(int id, [FromForm] MovieDto dto)
+    public async Task<IActionResult> UpdateAsync(int id, [FromForm] MovieUpdateDto dto)
     {
         var movie = await _unitOfWork.Movie.GetByIdAsync(id);
 

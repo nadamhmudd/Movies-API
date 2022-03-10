@@ -11,9 +11,9 @@ namespace Movies.Services.Helpers.FilesHnadler
         public BaseFileHandler()
         {
             //Initialize 
-            Image = new ImagesHandler();
+            Image = new ImageHandler();
         }
-        public ImagesHandler Image { get; private set; }
+        public ImageHandler Image { get; private set; }
 
         //global method
         public async Task<string> Upload(IFormFile file, string path)

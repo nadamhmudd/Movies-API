@@ -1,5 +1,5 @@
 ﻿namespace Movies.Movies.WebAPI.DTOs;
-public class MovieDto 
+public class BaseMovieDto 
 {
     [MaxLength(250)]
     public string Title { get; set; }
@@ -12,8 +12,6 @@ public class MovieDto
 
     [MaxLength(2500)]
     public string StoryLine { get; set; }
-
-    public IFormFile? Poster { get; set; }
 
     public int GenreId { get; set; }
 }

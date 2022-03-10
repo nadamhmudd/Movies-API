@@ -3,5 +3,5 @@
 public interface IBaseFileHandler
 {
     //Register diffrent handlers, can add VideoHandler for trailer and so on
-    public ImagesHandler Image { get; }
+    public ImageHandler Image { get; }
 }
