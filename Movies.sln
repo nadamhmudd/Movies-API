@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Movies.API", "Movies.APi\Movies.API.csproj", "{D2CCC1AB-4190-4EFA-8D5A-6C040D273057}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Movies.WebAPI", "Movies.WebAPI\Movies.WebAPI.csproj", "{D2CCC1AB-4190-4EFA-8D5A-6C040D273057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.Core", "Movies.Core\Movies.Core.csproj", "{3FAF6CE3-53E0-49E9-9A28-BC79F67A8F56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Movies.Entities", "Movies.Entities\Movies.Entities.csproj", "{3FAF6CE3-53E0-49E9-9A28-BC79F67A8F56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.DataAccess", "Movies.DataAccess\Movies.DataAccess.csproj", "{B30C744F-A469-4E6A-AFAB-E8AB191489C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Movies.Repo", "Movies.Repo\Movies.Repo.csproj", "{B30C744F-A469-4E6A-AFAB-E8AB191489C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.Services", "Movies.Services\Movies.Services.csproj", "{CFA126FB-1226-4726-B845-07FE10E16284}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Movies.Services", "Movies.Services\Movies.Services.csproj", "{CFA126FB-1226-4726-B845-07FE10E16284}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
