@@ -8,7 +8,7 @@ global using Movies.Services.Helpers.FilesHnadler;
 global using Movies.Services.Helpers.Mapping;
 global using Movies.Services.UOW;
 global using Movies.Services.Extensions;
-
+global using AutoMapper;
 
 
 

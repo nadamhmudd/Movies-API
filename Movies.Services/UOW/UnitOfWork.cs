@@ -22,9 +22,4 @@ public class UnitOfWork : IUnitOfWork
     public IBaseRepository<Movie> Movie { get; private set; }
 
     public void Save() => _db.SaveChanges();
-
-    void IUnitOfWork.Save()
-    {
-        throw new NotImplementedException();
-    }
 }

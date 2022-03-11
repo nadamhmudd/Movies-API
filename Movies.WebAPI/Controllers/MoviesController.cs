@@ -6,23 +6,29 @@ public class MoviesController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IWebHostEnvironment _hostEnviroment;
-    private readonly IBaseFileHandler _fileHandler;
+    //private readonly IBaseFileHandler _fileHandler;
+    private readonly IMapper _mapper;
 
     public MoviesController(IUnitOfWork unitOfWork,
-        IWebHostEnvironment hostEnviroment = null,
-        IBaseFileHandler fileHandler = null)
+        IWebHostEnvironment hostEnviroment,
+        //IBaseFileHandler fileHandler
+        IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _hostEnviroment = hostEnviroment;
-        _fileHandler = fileHandler;
+        //_fileHandler = fileHandler;
+        _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllAysnc()
     {
-        var movies = await _unitOfWork.Movie.GetAllAsync(includeProperties: "Genre", orderBy: m => m.Rate, orderByDirection: SD.Descending);
+        var movies = await _unitOfWork.Movie.GetAllAsync(
+            includeProperties: "Genre", 
+            orderBy: m => m.Rate,
+            orderByDirection: SD.Descending);
 
-        return Ok(movies);
+        return Ok(_mapper.Map<IEnumerable<MovieDetailsDto>>(movies));
     }
 
     [HttpGet("{id}")]
@@ -35,7 +41,7 @@ public class MoviesController : ControllerBase
         if (movie is null)
             return NotFound($"No movie was found with ID: {id}");
 
-        return Ok(movie);
+        return Ok(_mapper.Map<MovieDetailsDto>(movie));
     }
 
     [HttpGet("GetByGenreId")]
@@ -44,36 +50,32 @@ public class MoviesController : ControllerBase
         if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == genreId))
             return BadRequest("Invaild Genre ID!");
 
-        var movie = await _unitOfWork.Movie.GetAllAsync(
+        var movies = await _unitOfWork.Movie.GetAllAsync(
             criteria: m => m.GenreId == genreId,
             includeProperties: "Genre",
             orderBy: m => m.Rate, orderByDirection: SD.Descending);
 
-        if (movie.Count() == 0)
+        if (movies.Count() == 0)
             return NotFound($"No movie was found under genre: {(await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == genreId)).Name}");
 
-        return Ok(movie);
+        return Ok(_mapper.Map<IEnumerable<MovieDetailsDto>>(movies));
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromForm] MovieDetailsDto dto)
+    public async Task<IActionResult> CreateAsync([FromForm] MovieCreateionDto dto)
     {
         if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == dto.GenreId))
             return BadRequest("Invaild Genre ID!");
 
-        string posterUrl = await _fileHandler.Image.Upload(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
+        //var x = 5;
+        string posterUrl = await BaseFileHandler.Upload(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
         if (!posterUrl.Contains('\\')) //not path
             return BadRequest(posterUrl); //return error message
 
-        var movie = new Movie
-        {
-            GenreId = dto.GenreId,
-            Title = dto.Title.Trim().CapitalizeFistLitter(),
-            Rate = dto.Rate,
-            StoryLine = dto.StoryLine,
-            Year = dto.Year,
-            PosterUrl = posterUrl
-        };
+        //mapping 
+        var movie = _mapper.Map<Movie>(dto);
+        movie.PosterUrl = posterUrl;
+
         await _unitOfWork.Movie.AddAsync(movie);
         _unitOfWork.Save();
 
@@ -91,14 +93,14 @@ public class MoviesController : ControllerBase
         if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == dto.GenreId))
             return BadRequest("Invaild Genre ID!");
 
-        if(dto.Poster is not null)
+        if (dto.Poster is not null)
         {
             //delete old poster
-            _fileHandler.Image.Delete(movie.PosterUrl); 
-            
+            BaseFileHandler.Delete(movie.PosterUrl);
+
             //upload new poster
-            var newPosterUrl = await _fileHandler.Image.Upload(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
-             
+            var newPosterUrl = await BaseFileHandler.Upload(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
+
             if (!newPosterUrl.Contains('\\')) //not path
                 return BadRequest(newPosterUrl); //return error message
 
@@ -126,7 +128,7 @@ public class MoviesController : ControllerBase
 
         //Delete it
         //first delete poster image
-        _fileHandler.Image.Delete(movie.PosterUrl);
+        BaseFileHandler.Delete(movie.PosterUrl);
         _unitOfWork.Movie.Delete(movie);
         _unitOfWork.Save();
 

@@ -1,5 +1,7 @@
 ﻿namespace Movies.Movies.Core.DTOs;
 public class MovieDetailsDto : BaseMovieDto
 {
-    public IFormFile Poster { get; set; } //poster can't be null
+    public int Id { get; set; }
+    public string PosterUrl{ get; set; }
+    public string GenerName { get; set; }
 }
