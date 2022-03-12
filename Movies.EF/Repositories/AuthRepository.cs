@@ -80,7 +80,7 @@ public class AuthRepository : IAuthRepository
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id)
+                new Claim(SD.UserId, user.Id)
         }
         .Union(userClaims)
         .Union(roleClaims);

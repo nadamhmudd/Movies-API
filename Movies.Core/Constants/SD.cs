@@ -8,6 +8,8 @@ public static class SD
 
     public const string Role_Admin = "Admin";
     public const string Role_User  = "User";
+    
+    public const string UserId  = "UserId";
 
     public const string MoviesPosterpath = @"images\MoviesPoster";
 
