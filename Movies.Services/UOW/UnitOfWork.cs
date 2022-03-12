@@ -1,4 +1,5 @@
 ﻿using Movies.Core.Entities.Models;
+using Movies.Core.Interfaces;
 using Movies.EF;
 using Movies.EF.Repositories;
 

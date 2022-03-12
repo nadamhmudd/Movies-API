@@ -6,17 +6,17 @@ public class MoviesController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IWebHostEnvironment _hostEnviroment;
-    //private readonly IBaseFileHandler _fileHandler;
+    private readonly IFileHandler _fileHandler;
     private readonly IMapper _mapper;
 
     public MoviesController(IUnitOfWork unitOfWork,
         IWebHostEnvironment hostEnviroment,
-        //IBaseFileHandler fileHandler
+        IFileHandler fileHandler,
         IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _hostEnviroment = hostEnviroment;
-        //_fileHandler = fileHandler;
+        _fileHandler = fileHandler;
         _mapper = mapper;
     }
 
@@ -68,7 +68,7 @@ public class MoviesController : ControllerBase
             return BadRequest("Invaild Genre ID!");
 
         //var x = 5;
-        string posterUrl = await BaseFileHandler.Upload(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
+        string posterUrl = await _fileHandler.Image.Upload(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
         if (!posterUrl.Contains('\\')) //not path
             return BadRequest(posterUrl); //return error message
 
@@ -96,10 +96,10 @@ public class MoviesController : ControllerBase
         if (dto.Poster is not null)
         {
             //delete old poster
-            BaseFileHandler.Delete(movie.PosterUrl);
+            _fileHandler.Image.Delete(movie.PosterUrl);
 
             //upload new poster
-            var newPosterUrl = await BaseFileHandler.Upload(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
+            var newPosterUrl = await _fileHandler.Image.Upload(dto.Poster, Path.Combine(_hostEnviroment.WebRootPath, SD.MoviesPosterpath));
 
             if (!newPosterUrl.Contains('\\')) //not path
                 return BadRequest(newPosterUrl); //return error message
@@ -128,7 +128,7 @@ public class MoviesController : ControllerBase
 
         //Delete it
         //first delete poster image
-        BaseFileHandler.Delete(movie.PosterUrl);
+        _fileHandler.Image.Delete(movie.PosterUrl);
         _unitOfWork.Movie.Delete(movie);
         _unitOfWork.Save();
 

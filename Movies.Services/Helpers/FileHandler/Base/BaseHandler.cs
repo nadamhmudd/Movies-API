@@ -1,27 +1,16 @@
 ﻿global using Microsoft.AspNetCore.Http;
-global using Movies.Core.Interfaces;
+using Movies.Core.Interfaces;
 
 namespace Movies.Services.Helpers.FilesHnadler
 {
-    public static class BaseFileHandler //: IBaseFileHandler
+    public  class BaseHandler : IBaseHandler
     {
-        //protected  static string[] allowedExtensions;
-        //protected const long maxAllowedSize;
-        //protected const long megabyte;
-        private static string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".svg" };
-        private const long maxAllowedSize = 1048576; //one megebyte
-        private const long megabyte = 1024 * 1024;
-
-
-        //public BaseFileHandler()
-        //{
-        //    //Initialize 
-        //    Image = new();
-        //}
-        //public ImageHandler Image { get; private set; }
+        protected  string[] allowedExtensions;
+        protected   long maxAllowedSize;
+        protected long megabyte;
 
         //global method
-        public static async Task<string> Upload(IFormFile file, string path)
+        public async Task<string> Upload(IFormFile file, string path)
         {
             var name = Guid.NewGuid().ToString();
             var extension = Path.GetExtension(file.FileName).ToLower();
@@ -37,7 +26,7 @@ namespace Movies.Services.Helpers.FilesHnadler
 
             return @$"{path}\{name + extension}";
         }
-        public static void Delete(string path)
+        public void Delete(string path)
         {
             if (System.IO.File.Exists(path))
                 System.IO.File.Delete(path);

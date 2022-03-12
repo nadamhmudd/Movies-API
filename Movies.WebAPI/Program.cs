@@ -13,7 +13,7 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
 //register unitOfWork for our program 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IBaseFileHandler, BaseFileHandler>();
+builder.Services.AddScoped<IFileHandler, FileHandler>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
