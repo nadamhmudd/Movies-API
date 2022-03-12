@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Movies.Core.Constants;
+using Movies.Core.DTOs;
 using Movies.Core.Interfaces;
 
 namespace Movies.EF.Seeding;
@@ -7,16 +8,16 @@ public class DbInitializer : IDbInitializer
 {
     private ApplicationDbContext _db;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUnitOfWork _unitOfWork;
 
     public DbInitializer(
         ApplicationDbContext db,
         RoleManager<IdentityRole> roleManager, 
-        UserManager<ApplicationUser> userManager)
+        IUnitOfWork unitOfWork)
     {
         _db = db;
         _roleManager = roleManager;
-        _userManager = userManager;
+        _unitOfWork  = unitOfWork;
     }
 
     public void Initialize()
@@ -54,17 +55,13 @@ public class DbInitializer : IDbInitializer
 
     private void _createAdmin()
     {
-        _userManager.CreateAsync(new ApplicationUser
-        {
-            //temprory magic data
+        _unitOfWork.Auth.RegisterAsync( new RegisterDto
+        {  //temprory magic data
             UserName = "Admin",
             Email = "Admin@test.com",
             FirstName = "APP",
-            LastName  = "Manager"
-        }, "Admin123*").GetAwaiter().GetResult();
-
-        //add role
-        ApplicationUser user = _db.Users.FirstOrDefault(u => u.Email == "Admin@test.com");
-        _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
+            LastName = "Manager",
+            Password = "Admin123*"
+        });
     }
 }
