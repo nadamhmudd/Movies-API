@@ -19,7 +19,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
-
 //register unitOfWork for our program 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFileHandler, FileHandler>();
@@ -33,7 +32,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 //add AutoMapper
 var mapperConfig = new MapperConfiguration(mc => {
-    mc.AddProfile(new MappingProfile());
+    mc.AddProfile(new MovieMappingProfile());
+    mc.AddProfile(new AuthMappingProfile());
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 //builder.Services.AddAutoMapper(typeof(Program));

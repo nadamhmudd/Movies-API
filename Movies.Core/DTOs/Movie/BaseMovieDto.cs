@@ -1,6 +1,6 @@
 ﻿global using Microsoft.AspNetCore.Http;
 
-namespace Movies.Movies.Core.DTOs;
+namespace Movies.Core.DTOs;
 public class BaseMovieDto 
 {
     [MaxLength(250)]

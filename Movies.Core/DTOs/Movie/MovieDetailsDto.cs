@@ -1,4 +1,4 @@
-﻿namespace Movies.Movies.Core.DTOs;
+﻿namespace Movies.Core.DTOs;
 public class MovieDetailsDto : BaseMovieDto
 {
     public int Id { get; set; }

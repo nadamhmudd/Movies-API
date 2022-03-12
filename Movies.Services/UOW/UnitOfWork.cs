@@ -4,6 +4,8 @@ using Movies.Core.Interfaces;
 using Movies.EF;
 using Movies.EF.Repositories;
 using Movies.Core.appsettings;
+using AutoMapper;
+using Microsoft.Extensions.Options;
 
 namespace Movies.Services.UOW;
 
@@ -15,15 +17,14 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(ApplicationDbContext db, 
         UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager,
-        JWT jwt)
+        IOptions<JWT> jwt, IMapper mapper)
     {
         _db = db;
 
         //Initialize App Repositories
         Genre = new BaseRepository<Genre>(_db.Set<Genre>());
         Movie = new BaseRepository<Movie>(_db.Set<Movie>());
-        Auth = new AuthRepository(userManager, roleManager, jwt);
-        
+        Auth = new AuthRepository(userManager, roleManager, jwt, mapper);
     }
 
     public IBaseRepository<Genre> Genre { get; private set; }

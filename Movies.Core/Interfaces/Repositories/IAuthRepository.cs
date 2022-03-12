@@ -1,4 +1,7 @@
-﻿namespace Movies.Core.Interfaces;
+﻿using Movies.Core.DTOs;
+
+namespace Movies.Core.Interfaces;
 public interface IAuthRepository
 {
+    Task<AuthDto> RegisterAsync(RegisterDto dto);
 }

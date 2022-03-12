@@ -1,4 +1,4 @@
-﻿namespace Movies.Movies.Core.DTOs;
+﻿namespace Movies.Core.DTOs;
 
 //DTO -> Data transfer Object used with apis
 public class GenreDto

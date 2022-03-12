@@ -1,4 +1,5 @@
-﻿using Movies.Core.Entities.Models;
+﻿using Movies.Core.appsettings;
+using Movies.Core.Entities.Models;
 
 namespace Movies.Core.Interfaces;
 public interface IUnitOfWork
