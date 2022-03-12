@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Movies.EF.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +11,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+
 
 //register unitOfWork for our program 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFileHandler, FileHandler>();
+
+//Seed Database
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -56,6 +65,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//seed database 
+SeedDatabase();
+
 //add core before authorization
 app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
@@ -64,3 +76,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+//----------------Helper Method-----------------------------
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    };
+}
