@@ -18,5 +18,7 @@
 ![auth](SwaggerUI-Screenshots/Movies.png)
 
 - ### Schemas
-- In revokeToken endpoint, token can passed throw Request body (RevokeTokenDto) or in cookie
 ![auth](SwaggerUI-Screenshots/Schemas.png)
+
+- In revokeToken endpoint, token can passed throw Request body (RevokeTokenDto) or in cookie
+
