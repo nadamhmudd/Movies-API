@@ -7,7 +7,7 @@
 5. Secure API with JWT Authentication.
 6. Implement Refresh Token.
 7. Apply Automapping.
-### Swagger UI Screenshots
+# Swagger UI Screenshots
 - Auth Endpoints
 ![auth](SwaggerUI-Screenshots/Auth.png)
 
