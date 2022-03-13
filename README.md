@@ -1,5 +1,5 @@
 # Movies API
-Build AsSP.NET Core Web API (.NET 6) 
+### Build ASP.NET Core Web API (.NET 6) 
 1. Use User-Identity
 2. Secure API with JWT Authentication 
 3. Apply Refresh Token
