@@ -21,4 +21,4 @@
 ![auth](SwaggerUI-Screenshots/Schemas.png)
 
 - In (GET) revokeToken endpoint, token can passed throw Request body (RevokeTokenDto) or in cookie
-- In (POST) Movie endpoint, data will be passed from form (to upload movie poster(supported)/ trailer video (feature can be added and extended from [fileHandler](https://github.com/nadamhmudd/Movies-API/blob/master/Movies.Core/Interfaces/FileHandler/IFileHandler.cs))
+- In (POST) Movie endpoint, data will be passed from form (to upload movie poster(supported)/ trailer video (feature can be [added](https://github.com/nadamhmudd/Movies-API/blob/master/Movies.Core/Interfaces/FileHandler/IFileHandler.cs) and [extended](https://github.com/nadamhmudd/Movies-API/blob/master/Movies.Services/Helpers/FileHandler/Base/BaseHandler.cs))
