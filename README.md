@@ -5,8 +5,8 @@
 3. Use Asp.net Identity.
 4. Implement the Repository and Unit of Work Patterns.
 5. Secure API with JWT Authentication.
-6. Implement Refresh Token.
-7. Apply Automapping.
+6. Implement Refresh Token (storing in cookie).
+7. Apply Automapping and Extension Methods.
 # Swagger UI Screenshots
 - Auth Endpoints
 ![auth](SwaggerUI-Screenshots/Auth.png)
