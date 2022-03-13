@@ -11,12 +11,12 @@
 - ### Auth Endpoints
 ![auth](SwaggerUI-Screenshots/Auth.png)
 
-- ###Genres Endpoints
+- ### Genres Endpoints
 ![auth](SwaggerUI-Screenshots/Geners.png)
 
-- ###Movies Endpoints
+- ### Movies Endpoints
 ![auth](SwaggerUI-Screenshots/Movies.png)
 
-- ###Schemas
-- In revokeToken endpoint, token can passed throw Request body or cookie
+- ### Schemas
+- In revokeToken endpoint, token can passed throw Request body (RevokeTokenDto) or in cookie
 ![auth](SwaggerUI-Screenshots/Schemas.png)
