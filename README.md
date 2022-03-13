@@ -8,14 +8,15 @@
 6. Implement Refresh Token (storing in cookie).
 7. Apply Automapping and Extension Methods.
 # Swagger UI Screenshots
-- Auth Endpoints
+- ### Auth Endpoints
 ![auth](SwaggerUI-Screenshots/Auth.png)
 
-- Genres Endpoints
+- ###Genres Endpoints
 ![auth](SwaggerUI-Screenshots/Geners.png)
 
-- Movies Endpoints
+- ###Movies Endpoints
 ![auth](SwaggerUI-Screenshots/Movies.png)
 
-- Schemas
+- ###Schemas
+- In revokeToken endpoint, token can passed throw Request body or cookie
 ![auth](SwaggerUI-Screenshots/Schemas.png)
