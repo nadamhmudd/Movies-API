@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Movies.Core.Constants;
-using Movies.Core.DTOs;
 using Movies.Core.Interfaces;
 
 namespace Movies.EF.Seeding;
@@ -8,16 +7,19 @@ public class DbInitializer : IDbInitializer
 {
     private ApplicationDbContext _db;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IJWT _jwt;
+
 
     public DbInitializer(
         ApplicationDbContext db,
-        RoleManager<IdentityRole> roleManager, 
-        IUnitOfWork unitOfWork)
+        RoleManager<IdentityRole> roleManager,
+        UserManager<ApplicationUser> userManager, IJWT jwt)
     {
         _db = db;
         _roleManager = roleManager;
-        _unitOfWork  = unitOfWork;
+        _userManager = userManager;
+        _jwt = jwt;
     }
 
     public void Initialize()
@@ -40,7 +42,7 @@ public class DbInitializer : IDbInitializer
             _seedRoles();
 
             //if roles are not created, then we will create admin user as well
-            _createAdmin();
+           _createAdmin();
         }
 
         return;
@@ -55,13 +57,19 @@ public class DbInitializer : IDbInitializer
 
     private void _createAdmin()
     {
-        _unitOfWork.Auth.RegisterAsync( new RegisterDto
-        {  //temprory magic data
-            UserName = "Admin",
+        _userManager.CreateAsync(new ApplicationUser
+        {
+            //temprory magic data
+            UserName = "admin",
             Email = "Admin@test.com",
             FirstName = "APP",
             LastName = "Manager",
-            Password = "Admin123*"
-        });
+        }, "Admin123*").GetAwaiter().GetResult();
+
+        ApplicationUser user = _db.Users.FirstOrDefault(u => u.Email == "Admin@test.com");
+
+        _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
+
+        _jwt.CreateJwtToken(user);
     }
 }

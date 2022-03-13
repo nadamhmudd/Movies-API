@@ -25,4 +25,18 @@ public class AuthController : ControllerBase
         return Ok(user);
     }
 
+    [HttpPost("token")]
+    public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var user = await _unitOfWork.Auth.GetTokenAsync(dto);
+
+        if (!user.IsAuthenticated)
+            return BadRequest(user.Message);
+
+        return Ok(user);
+    }
+
 }

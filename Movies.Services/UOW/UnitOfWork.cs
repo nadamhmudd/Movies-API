@@ -17,7 +17,7 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(ApplicationDbContext db, 
         UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager,
-        IOptions<JWT> jwt, IMapper mapper)
+        IJWT jwt, IMapper mapper)
     {
         _db = db;
 

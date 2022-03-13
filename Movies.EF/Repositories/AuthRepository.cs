@@ -13,18 +13,18 @@ using System.Text;
 namespace Movies.EF.Repositories;
 public class AuthRepository : IAuthRepository
 {
-    private UserManager<ApplicationUser> _userManager;
-    private RoleManager<IdentityRole> _roleManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IMapper _mapper;
-    private JWT _jwt;
+    private readonly IJWT _jwt;
 
     public AuthRepository(UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        IOptions<JWT> jwt, IMapper mapper)
+        IJWT jwt, IMapper mapper)
     {
         this._userManager = userManager;
         this._roleManager = roleManager;
-        this._jwt = jwt.Value;
+        this._jwt = jwt;
         _mapper = mapper;
     }
 
@@ -33,8 +33,8 @@ public class AuthRepository : IAuthRepository
         if(await _userManager.FindByEmailAsync(dto.Email) is not null)
             return new AuthDto { Message = "Email is already registered!" };
 
-        if(await _userManager.FindByNameAsync(dto.UserName) is not null)
-            return new AuthDto { Message = "Username is already registered!" };
+        //if(await _userManager.FindByNameAsync(dto.UserName) is not null)
+        //    return new AuthDto { Message = "Username is already registered!" };
 
         var user = _mapper.Map<ApplicationUser>(dto);
         var result = await _userManager.CreateAsync(user, dto.Password);
@@ -44,15 +44,15 @@ public class AuthRepository : IAuthRepository
             var errors = "";
             foreach (var error in result.Errors)
                 errors += $"{error.Description}, ";
-            errors += errors.Trim(','); //remove last ,
+            errors = errors.Trim(','); //remove last ,
 
             return new AuthDto { Message = errors };
         }
 
         await _userManager.AddToRoleAsync(user, SD.Role_User); //by default
 
-        //vreate JWT
-        var jwtSecurityToken = await CreateJwtToken(user);
+        //create JWT
+        var jwtSecurityToken = await _jwt.CreateJwtToken(user);
 
         return new AuthDto
         {
@@ -65,37 +65,26 @@ public class AuthRepository : IAuthRepository
         };
     }
 
-    //------------ Helper Method--------------------------------
-    private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
+    public async Task<AuthDto> GetTokenAsync(TokenRequestDto dto)
     {
-        var userClaims = await _userManager.GetClaimsAsync(user);
-        var roles = await _userManager.GetRolesAsync(user);
+        var user = await _userManager.FindByEmailAsync(dto.Email);
+        
+        if (user is null || !await _userManager.CheckPasswordAsync(user, dto.Password))
+            return new AuthDto { Message = "Email or Password is incorrect!" };
 
-        var roleClaims = new List<Claim>();
-        foreach (var role in roles)
-            roleClaims.Add(new Claim("roles", role));
 
-        var claims = new[]
+        var jwtSecurityToken = await _jwt.CreateJwtToken(user);
+        
+        var rolesList = await _userManager.GetRolesAsync(user);
+
+        return  new AuthDto
         {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(SD.UserId, user.Id)
-        }
-        .Union(userClaims)
-        .Union(roleClaims);
-
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
-        var signingCredentials   = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-        var jwtSecurityToken = new JwtSecurityToken(
-            issuer: _jwt.Issuer,
-            audience: _jwt.Audience,
-            claims: claims,
-            expires: DateTime.Now.AddDays(_jwt.DurationInDays),
-            signingCredentials: signingCredentials
-            );
-
-        return jwtSecurityToken;
+            Email = user.Email,
+            UserName = user.UserName,
+            Roles = rolesList.ToList(),
+            IsAuthenticated = true,
+            Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+            ExpiresOn = jwtSecurityToken.ValidTo
+        };
     }
 }
