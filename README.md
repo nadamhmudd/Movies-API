@@ -10,9 +10,12 @@
 ### Swagger UI Screenshots
 - Auth Endpoints
 ![auth](SwaggerUI-Screenshots/Auth.png)
+
 - Genres Endpoints
 ![auth](SwaggerUI-Screenshots/Geners.png)
+
 - Movies Endpoints
 ![auth](SwaggerUI-Screenshots/Movies.png)
+
 - Schemas
 ![auth](SwaggerUI-Screenshots/Schemas.png)
