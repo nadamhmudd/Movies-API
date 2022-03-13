@@ -10,3 +10,4 @@ global using Movies.Services.UOW;
 global using Movies.Services.Extensions;
 global using Movies.Core.appsettings;
 global using AutoMapper;
+global using Microsoft.AspNetCore.Authorization;

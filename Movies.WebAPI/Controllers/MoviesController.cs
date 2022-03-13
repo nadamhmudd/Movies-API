@@ -61,7 +61,7 @@ public class MoviesController : ControllerBase
         return Ok(_mapper.Map<IEnumerable<MovieDetailsDto>>(movies));
     }
 
-    [HttpPost]
+    [HttpPost, Authorize(Roles = SD.Role_Admin)]
     public async Task<IActionResult> CreateAsync([FromForm] MovieCreateionDto dto)
     {
         if (!await _unitOfWork.Genre.IsValidAsync(g => g.Id == dto.GenreId))
@@ -82,7 +82,7 @@ public class MoviesController : ControllerBase
         return Ok(movie);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}"), Authorize(Roles = SD.Role_Admin)]
     public async Task<IActionResult> UpdateAsync(int id, [FromForm] MovieUpdateDto dto)
     {
         var movie = await _unitOfWork.Movie.GetByIdAsync(id);
@@ -118,7 +118,7 @@ public class MoviesController : ControllerBase
         return Ok(movie);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), Authorize(Roles = SD.Role_Admin)]
     public async Task<IActionResult> DeleteAsync(int id)
     {
         var movie = await _unitOfWork.Movie.GetByIdAsync(id);

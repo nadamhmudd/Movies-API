@@ -30,7 +30,7 @@
             return Ok(genre);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> CreateAsync(GenreDto dto)
         {
             var genre = new Genre
@@ -43,7 +43,7 @@
             return Ok(genre);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> UpdateAsync(byte id, [FromBody] GenreDto dto)
         {
             var genre = await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == id);
@@ -59,7 +59,7 @@
             return Ok(genre);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> DeleteAsync(byte id)
         {
             var genre = await _unitOfWork.Genre.GetFirstOrDefaultAsync(g => g.Id == id);

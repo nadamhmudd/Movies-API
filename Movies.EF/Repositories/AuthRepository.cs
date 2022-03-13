@@ -87,4 +87,19 @@ public class AuthRepository : IAuthRepository
             ExpiresOn = jwtSecurityToken.ValidTo
         };
     }
+
+    public async Task<string> AddRoleAsync(AddRoleDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(dto.UserId);
+
+        if (user is null || !await _roleManager.RoleExistsAsync(dto.Role))
+            return "Invalid user ID or Role";
+
+        if(await _userManager.IsInRoleAsync(user, dto.Role))
+            return "User already assigned to this role";
+
+        var result = await _userManager.AddToRoleAsync(user, dto.Role);
+
+        return result.Succeeded ? String.Empty : "Something went wrong";
+    }
 }

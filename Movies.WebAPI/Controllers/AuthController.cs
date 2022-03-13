@@ -1,4 +1,5 @@
-﻿namespace Movies.WebAPI.Controllers;
+﻿
+namespace Movies.WebAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -39,4 +40,17 @@ public class AuthController : ControllerBase
         return Ok(user);
     }
 
+    [HttpPost("addrole"), Authorize(Roles = SD.Role_Admin)]
+    public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await _unitOfWork.Auth.AddRoleAsync(dto);
+
+        if (!string.IsNullOrEmpty(result))
+            return BadRequest(result);
+
+        return Ok(dto);
+    }
 }
