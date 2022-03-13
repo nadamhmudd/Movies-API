@@ -7,10 +7,10 @@ using Movies.Core.Entities.Models;
 using Movies.Core.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+using System.Text; 
 
 namespace Movies.Services.Helpers;
-public class JWTHandler : IJWT
+public class JWTHandler : IJWTHandler
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JWT _jwt;

@@ -19,7 +19,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-builder.Services.AddScoped<IJWT, JWTHandler>();
+builder.Services.AddScoped<IJWTHandler, JWTHandler>();
 
 //register unitOfWork for our program 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -16,11 +16,11 @@ public class AuthRepository : IAuthRepository
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IMapper _mapper;
-    private readonly IJWT _jwt;
+    private readonly IJWTHandler _jwt;
 
     public AuthRepository(UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        IJWT jwt, IMapper mapper)
+        IJWTHandler jwt, IMapper mapper)
     {
         this._userManager = userManager;
         this._roleManager = roleManager;
@@ -33,8 +33,8 @@ public class AuthRepository : IAuthRepository
         if(await _userManager.FindByEmailAsync(dto.Email) is not null)
             return new AuthDto { Message = "Email is already registered!" };
 
-        //if(await _userManager.FindByNameAsync(dto.UserName) is not null)
-        //    return new AuthDto { Message = "Username is already registered!" };
+        if (await _userManager.FindByNameAsync(dto.UserName) is not null)
+            return new AuthDto { Message = "Username is already registered!" };
 
         var user = _mapper.Map<ApplicationUser>(dto);
         var result = await _userManager.CreateAsync(user, dto.Password);

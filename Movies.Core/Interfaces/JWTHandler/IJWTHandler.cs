@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Movies.Core.Interfaces;
-public interface IJWT
+public interface IJWTHandler
 {
     Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user);
 }
