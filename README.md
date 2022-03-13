@@ -20,5 +20,5 @@
 - ### Schemas
 ![auth](SwaggerUI-Screenshots/Schemas.png)
 
-- In revokeToken endpoint, token can passed throw Request body (RevokeTokenDto) or in cookie
-
+- In (GET) revokeToken endpoint, token can passed throw Request body (RevokeTokenDto) or in cookie
+- In (POST) Movie endpoint, data send from form (to upload movie poster(supported)/ trailer video (feature can be added and extended from (https://github.com/nadamhmudd/Movies-API/blob/master/Movies.Core/Interfaces/FileHandler/IFileHandler.cs)fileHandler)
