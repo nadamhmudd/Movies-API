@@ -7,15 +7,16 @@ using Movies.Core.Entities.Models;
 using Movies.Core.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text; 
+using System.Text;
+using System.Security.Cryptography;
 
 namespace Movies.Services.Helpers;
-public class JWTHandler : IJWTHandler
+public class TokenHandler : ITokenHandler
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JWT _jwt;
 
-    public JWTHandler(UserManager<ApplicationUser> userManager, 
+    public TokenHandler(UserManager<ApplicationUser> userManager, 
         IOptions<JWT> jwt)
     {
         _userManager = userManager;
@@ -48,10 +49,40 @@ public class JWTHandler : IJWTHandler
             issuer:   _jwt.Issuer,
             audience: _jwt.Audience,
             claims: claims,
-            expires: DateTime.Now.AddDays(_jwt.DurationInDays),
+            expires: DateTime.Now.AddDays(_jwt.DurationInMinutes),
             signingCredentials: signingCredentials
             );
 
         return jwtSecurityToken;
+    }
+
+    public async Task<RefreshToken> CreateRefreshToken(ApplicationUser user)
+    {
+        var refreshToken = new RefreshToken();
+
+        if (user.RefreshTokens.Any(t => t.IsActive))
+            refreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
+        else
+        {
+            refreshToken = _generateRefreshToken();
+
+            //add to db
+            user.RefreshTokens.Add(refreshToken);
+            await _userManager.UpdateAsync(user);
+        }
+
+        return refreshToken;
+    }
+
+    //---------------Helper Method--------------------------
+    private RefreshToken _generateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+
+        using var generator = new RNGCryptoServiceProvider();
+
+        generator.GetBytes(randomNumber);
+
+        return new RefreshToken { Token = Convert.ToBase64String(randomNumber) };
     }
 }

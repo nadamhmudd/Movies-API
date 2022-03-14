@@ -32,12 +32,15 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var user = await _unitOfWork.Auth.GetTokenAsync(dto);
+        var result = await _unitOfWork.Auth.GetTokenAsync(dto);
 
-        if (!user.IsAuthenticated)
-            return BadRequest(user.Message);
+        if (!result.IsAuthenticated)
+            return BadRequest(result.Message);
 
-        return Ok(user);
+        if (!string.IsNullOrEmpty(result.RefreshToken))
+            SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+        return Ok(result);
     }
 
     [HttpPost("addrole"), Authorize(Roles = SD.Role_Admin)]
@@ -53,4 +56,15 @@ public class AuthController : ControllerBase
 
         return Ok(dto);
     }
+
+    private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
+    {
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = expires.ToLocalTime()
+        };
+        Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+    }
 }
+

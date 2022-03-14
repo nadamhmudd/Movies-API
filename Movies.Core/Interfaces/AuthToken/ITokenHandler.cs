@@ -2,7 +2,8 @@
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Movies.Core.Interfaces;
-public interface IJWTHandler
+public interface ITokenHandler
 {
     Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user);
+    Task<RefreshToken> CreateRefreshToken(ApplicationUser user);
 }

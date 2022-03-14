@@ -8,4 +8,6 @@ public class ApplicationUser : IdentityUser
 
     [MaxLength(50)]
     public string LastName { get; set; }
+
+    public List<RefreshToken>? RefreshTokens { get; set; }
 }

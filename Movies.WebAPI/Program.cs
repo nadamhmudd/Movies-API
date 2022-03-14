@@ -19,7 +19,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-builder.Services.AddScoped<IJWTHandler, JWTHandler>();
+builder.Services.AddScoped<global::Movies.Core.Interfaces.ITokenHandler, global::Movies.Services.Helpers.TokenHandler>();
 
 //register unitOfWork for our program 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -58,7 +58,8 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = true,
             ValidIssuer      = builder.Configuration["JWT:Issuer"],
             ValidAudience    = builder.Configuration["JWT:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+            ClockSkew = TimeSpan.Zero
         };
     });
 

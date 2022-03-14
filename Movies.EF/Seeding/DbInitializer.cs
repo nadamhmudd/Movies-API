@@ -8,13 +8,13 @@ public class DbInitializer : IDbInitializer
     private ApplicationDbContext _db;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IJWTHandler _jwt;
+    private readonly ITokenHandler _jwt;
 
 
     public DbInitializer(
         ApplicationDbContext db,
         RoleManager<IdentityRole> roleManager,
-        UserManager<ApplicationUser> userManager, IJWTHandler jwt)
+        UserManager<ApplicationUser> userManager, ITokenHandler jwt)
     {
         _db = db;
         _roleManager = roleManager;

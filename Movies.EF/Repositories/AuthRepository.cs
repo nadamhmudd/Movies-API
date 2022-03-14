@@ -16,15 +16,15 @@ public class AuthRepository : IAuthRepository
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IMapper _mapper;
-    private readonly IJWTHandler _jwt;
+    private readonly ITokenHandler _tokenHandler;
 
     public AuthRepository(UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        IJWTHandler jwt, IMapper mapper)
+        ITokenHandler jwt, IMapper mapper)
     {
         this._userManager = userManager;
         this._roleManager = roleManager;
-        this._jwt = jwt;
+        this._tokenHandler = jwt;
         _mapper = mapper;
     }
 
@@ -52,7 +52,7 @@ public class AuthRepository : IAuthRepository
         await _userManager.AddToRoleAsync(user, SD.Role_User); //by default
 
         //create JWT
-        var jwtSecurityToken = await _jwt.CreateJwtToken(user);
+        var jwtSecurityToken = await _tokenHandler.CreateJwtToken(user);
 
         return new AuthDto
         {
@@ -61,7 +61,7 @@ public class AuthRepository : IAuthRepository
             Roles = new List<string> { SD.Role_User },
             IsAuthenticated = true,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            ExpiresOn = jwtSecurityToken.ValidTo
+            //ExpiresOn = jwtSecurityToken.ValidTo
         };
     }
 
@@ -72,19 +72,21 @@ public class AuthRepository : IAuthRepository
         if (user is null || !await _userManager.CheckPasswordAsync(user, dto.Password))
             return new AuthDto { Message = "Email or Password is incorrect!" };
 
-
-        var jwtSecurityToken = await _jwt.CreateJwtToken(user);
+        var jwtSecurityToken = await _tokenHandler.CreateJwtToken(user);
         
         var rolesList = await _userManager.GetRolesAsync(user);
 
-        return  new AuthDto
+        var refreshToken = await _tokenHandler.CreateRefreshToken(user);
+
+        return new AuthDto
         {
             Email = user.Email,
             UserName = user.UserName,
             Roles = rolesList.ToList(),
             IsAuthenticated = true,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            ExpiresOn = jwtSecurityToken.ValidTo
+            RefreshToken = refreshToken.Token,
+            RefreshTokenExpiration = refreshToken.ExpiresOn,
         };
     }
 
@@ -101,5 +103,10 @@ public class AuthRepository : IAuthRepository
         var result = await _userManager.AddToRoleAsync(user, dto.Role);
 
         return result.Succeeded ? String.Empty : "Something went wrong";
+    }
+
+    Task<AuthDto> RefreshTokenAsync(string token)
+    {
+
     }
 }

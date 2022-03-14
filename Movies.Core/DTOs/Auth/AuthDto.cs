@@ -1,4 +1,6 @@
-﻿namespace Movies.Core.DTOs;
+﻿using System.Text.Json.Serialization;
+
+namespace Movies.Core.DTOs;
 public class AuthDto
 {
     public string Message { get; set; }
@@ -7,5 +9,10 @@ public class AuthDto
     public string Email { get; set; }
     public List<string> Roles { get; set; }
     public string Token { get; set; }
-    public DateTime ExpiresOn { get; set; }
+
+    //public DateTime ExpiresOn { get; set; }
+
+    [JsonIgnore] //send in cookie
+    public string? RefreshToken { get; set; }
+    public DateTime RefreshTokenExpiration { get; set; }
 }
