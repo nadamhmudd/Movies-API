@@ -58,6 +58,22 @@ public class AuthController : ControllerBase
         return Ok(dto);
     }
 
+    [HttpPost("revokeToken")]
+    public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDto dto)
+    {
+        var token = dto.Token ?? Request.Cookies[SD.Cookies_RefreshToken];
+
+        if (string.IsNullOrEmpty(token))
+            return BadRequest("Token is required");
+
+        var result = await _unitOfWork.Auth.RevokeTokenAsync(token);
+
+        if (!result)
+            return BadRequest("Token is Invalid");
+
+        return Ok();
+    }
+
     [HttpGet("refreshToken")] //refresh token for loggeduser
     public async Task<IActionResult> RefreshToken()
     {

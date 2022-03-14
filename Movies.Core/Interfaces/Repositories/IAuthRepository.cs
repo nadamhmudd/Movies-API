@@ -7,4 +7,5 @@ public interface IAuthRepository
     Task<AuthDto> GetTokenAsync(LoginDto dto);
     Task<string> AddRoleAsync(AddRoleDto dto);
     Task<AuthDto> RefreshTokenAsync(string token);
+    Task<bool> RevokeTokenAsync(string token);
 }
