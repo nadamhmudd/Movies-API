@@ -1,5 +1,4 @@
-﻿
-namespace Movies.WebAPI.Controllers;
+﻿namespace Movies.WebAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -18,16 +17,18 @@ public class AuthController : ControllerBase
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var user = await _unitOfWork.Auth.RegisterAsync(dto);
+        var result = await _unitOfWork.Auth.RegisterAsync(dto);
 
-        if (!user.IsAuthenticated)
-            return BadRequest(user.Message);
+        if (!result.IsAuthenticated)
+            return BadRequest(result.Message);
 
-        return Ok(user);
+        SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+        return Ok(result);
     }
 
-    [HttpPost("token")]
-    public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestDto dto)
+    [HttpPost("login")] //request to get token
+    public async Task<IActionResult> GetTokenAsync([FromBody] LoginDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -57,6 +58,22 @@ public class AuthController : ControllerBase
         return Ok(dto);
     }
 
+    [HttpGet("refreshToken")] //refresh token for loggeduser
+    public async Task<IActionResult> RefreshToken()
+    {
+        var refreshToken = Request.Cookies[SD.Cookies_RefreshToken];
+        
+        var result = await _unitOfWork.Auth.RefreshTokenAsync(refreshToken);
+
+        if (!result.IsAuthenticated)
+            return BadRequest(result.Message);
+
+        SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+        return Ok(result);
+    }
+
+    //---------------------Helper Mehods--------------------------------------------------
     private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
     {
         var cookieOptions = new CookieOptions
@@ -64,7 +81,7 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Expires = expires.ToLocalTime()
         };
-        Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        Response.Cookies.Append(SD.Cookies_RefreshToken, refreshToken, cookieOptions);
     }
 }
 

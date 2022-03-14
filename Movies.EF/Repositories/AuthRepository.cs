@@ -65,7 +65,7 @@ public class AuthRepository : IAuthRepository
         };
     }
 
-    public async Task<AuthDto> GetTokenAsync(TokenRequestDto dto)
+    public async Task<AuthDto> GetTokenAsync(LoginDto dto)
     {
         var user = await _userManager.FindByEmailAsync(dto.Email);
         
@@ -74,15 +74,13 @@ public class AuthRepository : IAuthRepository
 
         var jwtSecurityToken = await _tokenHandler.CreateJwtToken(user);
         
-        var rolesList = await _userManager.GetRolesAsync(user);
-
         var refreshToken = await _tokenHandler.CreateRefreshToken(user);
 
         return new AuthDto
         {
             Email = user.Email,
             UserName = user.UserName,
-            Roles = rolesList.ToList(),
+            Roles = (await _userManager.GetRolesAsync(user)).ToList(),
             IsAuthenticated = true,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
             RefreshToken = refreshToken.Token,
@@ -105,8 +103,43 @@ public class AuthRepository : IAuthRepository
         return result.Succeeded ? String.Empty : "Something went wrong";
     }
 
-    Task<AuthDto> RefreshTokenAsync(string token)
+    public async Task<AuthDto> RefreshTokenAsync(string token)
     {
+        var authDto = new AuthDto();
 
+        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+
+        if(user is null)
+        {
+            authDto.Message = "Invalid Token";
+            return authDto;
+        }
+
+        var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
+        if (!refreshToken.IsActive)
+        {
+            authDto.Message = "Inactive Token";
+            return authDto;
+        }
+
+        //step 1 : revoke refreshToken
+        refreshToken.RevokedOn = DateTime.UtcNow;
+
+        //step 2 : create new refreshToken
+        var newRefreshToken = await _tokenHandler.CreateRefreshToken(user);
+
+        //step 3 : Create JWT Token 
+        var jwtToken = await _tokenHandler.CreateJwtToken(user);
+
+
+        authDto.Email = user.Email;
+        authDto.UserName = user.UserName;
+        authDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
+        authDto.IsAuthenticated = true;
+        authDto.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        authDto.RefreshToken = newRefreshToken.Token;
+        authDto.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
+
+        return authDto;
     }
 }
