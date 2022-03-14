@@ -4,11 +4,14 @@
 [ApiController]
 public class MoviesController : ControllerBase
 {
+    #region Props
     private readonly IUnitOfWork _unitOfWork;
     private readonly IWebHostEnvironment _hostEnviroment;
     private readonly IFileHandler _fileHandler;
     private readonly IMapper _mapper;
+    #endregion
 
+    #region Constructor(s)
     public MoviesController(IUnitOfWork unitOfWork,
         IWebHostEnvironment hostEnviroment,
         IFileHandler fileHandler,
@@ -19,7 +22,9 @@ public class MoviesController : ControllerBase
         _fileHandler = fileHandler;
         _mapper = mapper;
     }
+    #endregion
 
+    #region Actions
     [HttpGet]
     public async Task<IActionResult> GetAllAysnc()
     {
@@ -134,4 +139,5 @@ public class MoviesController : ControllerBase
 
         return Ok(movie);
     }
+    #endregion
 }

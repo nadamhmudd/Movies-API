@@ -4,11 +4,32 @@
 [ApiController]
 public class AuthController : ControllerBase
 {
+    #region Props
     private readonly IUnitOfWork _unitOfWork;
+    #endregion
 
+    #region Constructor(s)
     public AuthController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+    }
+    #endregion
+
+    #region Actions
+
+    [HttpGet("refreshToken")] //refresh token for loggeduser
+    public async Task<IActionResult> RefreshToken()
+    {
+        var refreshToken = Request.Cookies[SD.Cookies_RefreshToken];
+
+        var result = await _unitOfWork.Auth.RefreshTokenAsync(refreshToken);
+
+        if (!result.IsAuthenticated)
+            return BadRequest(result.Message);
+
+        SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+        return Ok(result);
     }
 
     [HttpPost("register")]
@@ -44,20 +65,6 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("addrole"), Authorize(Roles = SD.Role_Admin)]
-    public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleDto dto)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var result = await _unitOfWork.Auth.AddRoleAsync(dto);
-
-        if (!string.IsNullOrEmpty(result))
-            return BadRequest(result);
-
-        return Ok(dto);
-    }
-
     [HttpPost("revokeToken")]
     public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDto dto)
     {
@@ -74,22 +81,23 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("refreshToken")] //refresh token for loggeduser
-    public async Task<IActionResult> RefreshToken()
+    [HttpPost("addrole"), Authorize(Roles = SD.Role_Admin)]
+    public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleDto dto)
     {
-        var refreshToken = Request.Cookies[SD.Cookies_RefreshToken];
-        
-        var result = await _unitOfWork.Auth.RefreshTokenAsync(refreshToken);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        if (!result.IsAuthenticated)
-            return BadRequest(result.Message);
+        var result = await _unitOfWork.Auth.AddRoleAsync(dto);
 
-        SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+        if (!string.IsNullOrEmpty(result))
+            return BadRequest(result);
 
-        return Ok(result);
+        return Ok(dto);
     }
 
-    //---------------------Helper Mehods--------------------------------------------------
+    #endregion
+
+    #region Helper Mehods
     private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
     {
         var cookieOptions = new CookieOptions
@@ -99,5 +107,6 @@ public class AuthController : ControllerBase
         };
         Response.Cookies.Append(SD.Cookies_RefreshToken, refreshToken, cookieOptions);
     }
+    #endregion
 }
 
