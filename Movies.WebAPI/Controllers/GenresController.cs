@@ -16,7 +16,7 @@ public class GenresController : ControllerBase
     #endregion
 
     #region Actions
-    [HttpGet, Authorize]
+    [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
         var genres = await _unitOfWork.Genre.GetAllAsync(orderBy: g => g.Name);
